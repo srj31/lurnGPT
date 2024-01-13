@@ -1,5 +1,4 @@
 import { cn } from "@/lib/utils";
-import Image from "next/image";
 
 interface SkillArtworkProps extends React.HTMLAttributes<HTMLDivElement> {
   page: any;
@@ -24,7 +23,7 @@ export const SkillPageCard = ({
       onClick={() => cardClick()}
       {...props}
     >
-      <div className="overflow-hidden dark:bg-white bg-gray-100 rounded-md flex flex-col items-center">
+      <div className="overflow-hidden min-h-[30vh] flex flex-col justify-center dark:bg-white bg-gray-100 rounded-md flex flex-col items-center">
         <img
           src={
             page?.pagemap?.cse_image?.length > 0

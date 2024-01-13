@@ -9,12 +9,25 @@ import { Suspense, useEffect, useState } from "react";
 import axios from "axios";
 import { SkillPageCard } from "./lurn_page";
 import { Icons } from "./assets/icons";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  setDoc,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { database } from "@/app/config";
+import { parseToArrays } from "@/lib/utils";
 
 export const UserComponent = () => {
   const { user } = UserAuth();
   const userSkillsRef = collection(database, "user_skills");
+  const userPlanRef = collection(database, "user_plan");
+  const userPlansDone = collection(database, "user_plans_done");
   const [selectedSkill, setSelectedSkill] = useState({ name: "", level: "" });
   const [userSkills, setUserSkills] = useState<Skill[]>([]);
 
@@ -31,34 +44,69 @@ export const UserComponent = () => {
 
   const [lurnPage, setLurnPage] = useState();
 
+  const getPlan = async () => {
+    const key = selectedSkill.name + "_" + selectedSkill.level;
+    const docRef = doc(database, "user_plan", key);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      console.log("yup it exists");
+      return docSnap.data().data;
+    } else {
+      const url = "api/createMessage";
+      const res = await axios.post(url, {
+        messages: [
+          {
+            role: "system",
+            content: `You are a ${selectedSkill.name} expert.`,
+          },
+          {
+            role: "user",
+            content: `I consider myself at a ${selectedSkill.level} level and I want to learn more about ${selectedSkill.name}, can you give me a plan for learning ${selectedSkill.level} level stuff with each learning expressed in a single line and only give me the bullet points and no other text`,
+          },
+        ],
+      });
+      const content = res.data.data.choices[0].message.content;
+      const data = parseToArrays(content);
+      setDoc(docRef, {
+        data,
+      });
+      return data;
+    }
+  };
+
+  const getCompletedPlans = async () => {
+    const key = user.uid;
+    const docRef = doc(database, "user_plans_done", key);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      return docSnap.data()[selectedSkill.name] ?? [];
+    } else {
+      const obj: Record<string, string[]> = {};
+      obj[selectedSkill.name] = [];
+      return obj;
+    }
+  };
+
   const handleLurn = async () => {
-    // Logic for calling the lurn api here
-    // const url = "api/createMessage";
-    //
-    // const res = await axios.post(url, {
-    //   messages: [
-    //     {
-    //       role: "system",
-    //       content: `You are a ${selectedSkill.name} expert.`,
-    //     },
-    //     {
-    //       role: "user",
-    //       content: `I consider myself at a ${selectedSkill.level} level and I want to learn more about ${selectedSkill.name}, can you tell me what I should learn next`,
-    //     },
-    //   ],
-    // });
+    const currentPlan = getPlan();
 
-    const googleUrl = "api/getGoogleData";
+    const completedPlans = getCompletedPlans();
 
-    const googleRes = await axios.get(googleUrl, {
-      params: {
-        q: "guitar beginner",
-      },
+    Promise.all([currentPlan, completedPlans]).then(async (values) => {
+      console.log(values);
+      const current = values[0] as any[];
+      const done = values[1] as any[];
+      const next = current.filter((plan) => done.indexOf(plan) === -1)[0];
+      const googleUrl = "api/getGoogleData";
+
+      const googleRes = await axios.get(googleUrl, {
+        params: {
+          q: next,
+        },
+      });
+
+      setLurnPage(googleRes.data.data);
     });
-
-    console.log(googleRes.data.data);
-
-    setLurnPage(googleRes.data.data);
 
     // console.log(res.data.data.choices[0].message.content);
   };
@@ -88,7 +136,7 @@ export const UserComponent = () => {
                   key={skill.name}
                   skill={skill}
                   className={`w-[150px] ${
-                    selectedSkill.name == skill.skill_name
+                    selectedSkill.name == skill.name
                       ? "border-b-2 dark:drop-shadow-[0_1px_5px_cyan] drop-shadow-[0_1px_5px_blue] "
                       : ""
                   }`}
@@ -97,7 +145,7 @@ export const UserComponent = () => {
                   height={150}
                   onClick={() =>
                     setSelectedSkill({
-                      name: skill.skill_name,
+                      name: skill.name,
                       level: skill.level,
                     })
                   }

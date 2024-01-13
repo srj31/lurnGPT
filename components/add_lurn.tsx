@@ -39,8 +39,6 @@ export function AddSheet() {
 
     const skillSnap = await getDocs(q);
 
-    console.log(skillSnap);
-
     if (skillSnap.empty) {
       addDoc(userSkillsRef, {
         user_id: user.uid,
@@ -55,7 +53,7 @@ export function AddSheet() {
       });
     } else {
       const skillRef = doc(database, "user_skills", skillSnap.docs[0].id);
-      const res = await updateDoc(skillRef, {
+      await updateDoc(skillRef, {
         skills: arrayUnion({
           description: "lorem ipsum",
           image: "https://images5.alphacoders.com/359/359452.jpg",
@@ -63,7 +61,6 @@ export function AddSheet() {
           level: selectedLevel,
         }),
       });
-      console.log(skillRef);
     }
 
     console.log(selectedLevel, skillName, user);
