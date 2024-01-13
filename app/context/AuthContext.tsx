@@ -43,7 +43,7 @@ export const AuthContextProvider = ({ children }: any) => {
   }, [user]);
 
   return (
-  //@ts-ignore
+    //@ts-ignore
     <AuthContext.Provider value={{ user, signUp, logIn, logOut }}>
       {children}
     </AuthContext.Provider>
