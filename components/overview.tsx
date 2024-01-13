@@ -11,7 +11,6 @@ import { doc, getDoc } from "firebase/firestore";
 import { database } from "@/app/config";
 import { UserAuth } from "@/app/context/AuthContext";
 import { RecentTasks } from "./recent_tasks";
-import groupBy from "lodash/fp/groupBy";
 export const Overview = () => {
   const { user } = UserAuth();
 
@@ -155,7 +154,10 @@ export const Overview = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {chartData[new Date().getMonth()]}
+              {
+                //@ts-ignore
+                chartData[new Date().getMonth()]
+              }
             </div>
             <p className="text-xs text-muted-foreground">
               +10.1% from last month

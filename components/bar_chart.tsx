@@ -23,6 +23,7 @@ export function Chart({ chartData }: { chartData: any }) {
       <BarChart
         data={Object.entries(chartData).map(([key, value]) => {
           return {
+            //@ts-ignore
             name: mapNumberToMonth[key],
             total: value,
           };

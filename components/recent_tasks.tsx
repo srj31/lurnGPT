@@ -5,7 +5,7 @@ export const RecentTasks = ({ tasks }: { tasks: any[] }) => {
     <div className="space-y-8">
       {tasks.map((task) => {
         return (
-          <div className="flex items-center">
+          <div key={task.title} className="flex items-center">
             <Avatar className="h-9 w-9">
               <AvatarImage src={task.img} alt="Avatar" />
               <AvatarFallback>{task.skill[0].toUpperCase()}</AvatarFallback>

@@ -18,6 +18,7 @@ const AuthContext = createContext({
 });
 
 export const AuthContextProvider = ({ children }: any) => {
+  //@ts-ignore
   const [user, setUser] = useState<User | null>(null);
 
   const signUp = (email: string, password: string, username: string) => {
@@ -42,6 +43,7 @@ export const AuthContextProvider = ({ children }: any) => {
   }, [user]);
 
   return (
+  //@ts-ignore
     <AuthContext.Provider value={{ user, signUp, logIn, logOut }}>
       {children}
     </AuthContext.Provider>

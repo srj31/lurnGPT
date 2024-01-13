@@ -5,7 +5,7 @@ import { AuthTabs } from "@/components/auth";
 import Home from "@/components/home";
 import { Icons } from "@/components/assets/icons";
 
-const page = () => {
+const PageComponent = () => {
   const { user } = UserAuth();
   const [loading, setLoading] = useState(true);
 
@@ -33,6 +33,10 @@ const page = () => {
       )}
     </div>
   );
+};
+
+const page = () => {
+  return <PageComponent />;
 };
 
 export default page;
