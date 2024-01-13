@@ -10,14 +10,12 @@ import axios from "axios";
 import { SkillPageCard } from "./lurn_page";
 import { Icons } from "./assets/icons";
 import {
-  addDoc,
   collection,
   doc,
   getDoc,
   getDocs,
   query,
   setDoc,
-  updateDoc,
   where,
 } from "firebase/firestore";
 import { database } from "@/app/config";
@@ -26,8 +24,6 @@ import { parseToArrays } from "@/lib/utils";
 export const UserComponent = () => {
   const { user } = UserAuth();
   const userSkillsRef = collection(database, "user_skills");
-  const userPlanRef = collection(database, "user_plan");
-  const userPlansDone = collection(database, "user_plans_done");
   const [selectedSkill, setSelectedSkill] = useState({ name: "", level: "" });
   const [userSkills, setUserSkills] = useState<Skill[]>([]);
 
@@ -49,7 +45,6 @@ export const UserComponent = () => {
     const docRef = doc(database, "user_plan", key);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
-      console.log("yup it exists");
       return docSnap.data().data;
     } else {
       const url = "api/createMessage";
@@ -93,7 +88,6 @@ export const UserComponent = () => {
     const completedPlans = getCompletedPlans();
 
     Promise.all([currentPlan, completedPlans]).then(async (values) => {
-      console.log(values);
       const current = values[0] as any[];
       const done = values[1] as any[];
       const next = current.filter((plan) => done.indexOf(plan) === -1)[0];
@@ -105,10 +99,8 @@ export const UserComponent = () => {
         },
       });
 
-      setLurnPage(googleRes.data.data);
+      setLurnPage({ ...googleRes.data.data, plan: next, skill: selectedSkill });
     });
-
-    // console.log(res.data.data.choices[0].message.content);
   };
   return (
     <div className="flex flex-col  space-y-2">

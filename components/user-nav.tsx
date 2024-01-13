@@ -14,7 +14,6 @@ import {
 
 export function UserNav() {
   const { user, logOut } = UserAuth();
-  console.log(user);
 
   const handleLogOut = async () => {
     try {

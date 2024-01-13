@@ -19,9 +19,15 @@ export function absoluteUrl(path: string) {
 }
 
 export const parseToArrays = (input: string) => {
-  const output = input.split("\n").map((line) => {
-    return line.replace(input, "- ");
-  });
+  const output = input
+    .split("\n")
+    .filter((line) => line.length > 0 || !line.startsWith("Sure"))
+    .map((line) => {
+      return line
+        .replace("- ", "")
+        .replace(/[0-9]./, "")
+        .trim();
+    });
 
   return output;
 };

@@ -33,6 +33,8 @@ export function AddSheet() {
 
   const [selectedLevel, setSelectedLevel] = useState("beginner");
   const [skillName, setName] = useState("");
+  const [skillDescription, setDescription] = useState("");
+  const [skillImage, setImage] = useState("");
 
   const handleAdd = async () => {
     const q = query(userSkillsRef, where("user_id", "==", user.uid));
@@ -44,8 +46,8 @@ export function AddSheet() {
         user_id: user.uid,
         skills: [
           {
-            description: "lorem ipsum",
-            image: "https://images5.alphacoders.com/359/359452.jpg",
+            description: skillDescription,
+            image: skillImage,
             name: skillName,
             level: selectedLevel,
           },
@@ -55,15 +57,13 @@ export function AddSheet() {
       const skillRef = doc(database, "user_skills", skillSnap.docs[0].id);
       await updateDoc(skillRef, {
         skills: arrayUnion({
-          description: "lorem ipsum",
-          image: "https://images5.alphacoders.com/359/359452.jpg",
+          description: skillDescription,
+          image: skillImage,
           name: skillName,
           level: selectedLevel,
         }),
       });
     }
-
-    console.log(selectedLevel, skillName, user);
   };
   return (
     <Sheet>
@@ -90,6 +90,28 @@ export function AddSheet() {
               className="col-span-3"
               value={skillName}
               onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right">
+              Describe
+            </Label>
+            <Input
+              id="skill_description"
+              className="col-span-3"
+              value={skillDescription}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right">
+              Image Link
+            </Label>
+            <Input
+              id="skill_image"
+              className="col-span-3"
+              value={skillImage}
+              onChange={(e) => setImage(e.target.value)}
             />
           </div>
           <div className="grid grid-cols-5 items-center gap-4">
