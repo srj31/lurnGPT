@@ -15,6 +15,7 @@ import { PlusCircledIcon } from "@radix-ui/react-icons";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { useState } from "react";
 import { Skill } from "@/data/lurn";
+import { toast } from "sonner";
 
 export function AddSheet({ handleAdd }: { handleAdd: (skill: Skill) => void }) {
   const [selectedLevel, setSelectedLevel] = useState("Beginner");
@@ -104,6 +105,7 @@ export function AddSheet({ handleAdd }: { handleAdd: (skill: Skill) => void }) {
                   name: skillName,
                   level: selectedLevel,
                 });
+                toast.success("Skill has been added");
               }}
             >
               Save changes

@@ -40,7 +40,10 @@ export const SkillPageCard = ({
       skill: page.skill.name,
       title: page.title,
       snippet: page.snippet,
-      img: page.pagemap.cse_image[0].src,
+      img:
+        page.pagemap.cse_image[0].src ??
+        "https://cdn.vectorstock.com/i/preview-1x/65/30/default-image-icon-missing-picture-page-vector-40546530.jpg",
+      link: page.link,
       date: Date.now(),
     };
 
@@ -76,7 +79,7 @@ export const SkillPageCard = ({
   return (
     <div className={cn("relative", className)} {...props}>
       <div
-        className="overflow-hidden h-full  flex flex-col justify-center dark:bg-white bg-gray-100 rounded-md flex flex-col items-center"
+        className="overflow-hidden h-full flex flex-col justify-center dark:bg-white bg-gray-100 rounded-md flex flex-col items-center"
         onClick={() => cardClick()}
       >
         <img
@@ -85,7 +88,7 @@ export const SkillPageCard = ({
               ? page.pagemap.cse_image[0].src
               : page.img
                 ? page.img
-                : ""
+                : "https://cdn.vectorstock.com/i/preview-1x/65/30/default-image-icon-missing-picture-page-vector-40546530.jpg"
           }
           alt={"page"}
           className={cn(
@@ -114,7 +117,7 @@ export const SkillPageCard = ({
                 <span className="mx-auto">Done</span>
               </button>
             ) : (
-              <button className="w-full opacity-50 hover:opacity-100 hover:cursor-pointer bg-white tracking-wide text-gray-800 font-bold rounded border-b-2 border-green-500 hover:border-green-600 hover:bg-green-500 hover:text-white shadow-md py-2 px-6">
+              <button className="w-full opacity-25 hover:opacity-100 hover:cursor-pointer bg-white tracking-wide text-gray-800 font-bold rounded border-b-2 border-green-500 hover:border-green-600 hover:bg-green-500 hover:text-white shadow-md py-2 px-6">
                 <span className="mx-auto">
                   Done {page.points && `(🏅 ${page.points})`}
                 </span>

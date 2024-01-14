@@ -11,12 +11,14 @@ import { doc, getDoc } from "firebase/firestore";
 import { database } from "@/app/config";
 import { UserAuth } from "@/app/context/AuthContext";
 import { RecentTasks } from "./recent_tasks";
+import { Skeleton } from "./ui/skeleton";
 export const Overview = () => {
   const { user } = UserAuth();
 
   const [totalCount, setTotalCount] = useState(0);
   const [minimumSkill, setMinimumSkill] = useState({ key: "", value: 1000000 });
   const [maximumSkill, setMaximumSkill] = useState({ key: "", value: -1 });
+  const [isLoading, setIsLoading] = useState(true);
 
   const [chartData, setChartData] = useState({});
 
@@ -100,6 +102,7 @@ export const Overview = () => {
         setMinimumSkill(minimum);
         setMaximumSkill(maximum);
       }
+      setIsLoading(false);
     };
 
     getAllStats();
@@ -128,8 +131,21 @@ export const Overview = () => {
             </svg>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalCount}</div>
-            <p className="text-xs text-muted-foreground">+50% from last year</p>
+            {isLoading ? (
+              <div>
+                <div className="space-y-2">
+                  <Skeleton className="h-6 w-[150px]" />
+                  <Skeleton className="h-4 w-[150px]" />
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="text-2xl font-bold">{totalCount}</div>
+                <p className="text-xs text-muted-foreground">
+                  +50% from last year
+                </p>
+              </>
+            )}
           </CardContent>
         </Card>
         <Card>
@@ -153,15 +169,26 @@ export const Overview = () => {
             </svg>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {
-                //@ts-ignore
-                chartData[new Date().getMonth()]
-              }
-            </div>
-            <p className="text-xs text-muted-foreground">
-              +10.1% from last month
-            </p>
+            {isLoading ? (
+              <div>
+                <div className="space-y-2">
+                  <Skeleton className="h-6 w-[150px]" />
+                  <Skeleton className="h-4 w-[150px]" />
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="text-2xl font-bold">
+                  {
+                    //@ts-ignore
+                    chartData[new Date().getMonth()]
+                  }
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  +10.1% from last month
+                </p>
+              </>
+            )}
           </CardContent>
         </Card>
         <Card>
@@ -185,10 +212,21 @@ export const Overview = () => {
             </svg>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{minimumSkill?.key}</div>
-            <p className="text-xs text-muted-foreground">
-              {minimumSkill.value} times only
-            </p>
+            {isLoading ? (
+              <div>
+                <div className="space-y-2">
+                  <Skeleton className="h-6 w-[150px]" />
+                  <Skeleton className="h-4 w-[150px]" />
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="text-2xl font-bold">{minimumSkill?.key}</div>
+                <p className="text-xs text-muted-foreground">
+                  {minimumSkill.value} times only
+                </p>
+              </>
+            )}
           </CardContent>
         </Card>
         <Card>
@@ -212,10 +250,21 @@ export const Overview = () => {
             </svg>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{maximumSkill.key}</div>
-            <p className="text-xs text-muted-foreground">
-              {maximumSkill.value} times nice
-            </p>
+            {isLoading ? (
+              <div>
+                <div className="space-y-2">
+                  <Skeleton className="h-6 w-[150px]" />
+                  <Skeleton className="h-4 w-[150px]" />
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="text-2xl font-bold">{maximumSkill.key}</div>
+                <p className="text-xs text-muted-foreground">
+                  {maximumSkill.value} times nice
+                </p>
+              </>
+            )}
           </CardContent>
         </Card>
       </div>
@@ -231,10 +280,50 @@ export const Overview = () => {
         <Card className="col-span-3">
           <CardHeader>
             <CardTitle>Recent skills</CardTitle>
-            <CardDescription>You learnt 5 skills today</CardDescription>
+            <CardDescription>Your recent 5 lessons</CardDescription>
           </CardHeader>
           <CardContent>
-            <RecentTasks tasks={recentTasks} />
+            {isLoading ? (
+              <div className="space-y-10">
+                <div className="flex items-center space-x-4">
+                  <Skeleton className="h-12 w-12 rounded-full" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-[250px]" />
+                    <Skeleton className="h-4 w-[200px]" />
+                  </div>
+                </div>
+                <div className="flex items-center space-x-4">
+                  <Skeleton className="h-12 w-12 rounded-full" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-[250px]" />
+                    <Skeleton className="h-4 w-[200px]" />
+                  </div>
+                </div>
+                <div className="flex items-center space-x-4">
+                  <Skeleton className="h-12 w-12 rounded-full" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-[250px]" />
+                    <Skeleton className="h-4 w-[200px]" />
+                  </div>
+                </div>
+                <div className="flex items-center space-x-4">
+                  <Skeleton className="h-12 w-12 rounded-full" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-[250px]" />
+                    <Skeleton className="h-4 w-[200px]" />
+                  </div>
+                </div>
+                <div className="flex items-center space-x-4">
+                  <Skeleton className="h-12 w-12 rounded-full" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-[250px]" />
+                    <Skeleton className="h-4 w-[200px]" />
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <RecentTasks tasks={recentTasks} />
+            )}
           </CardContent>
         </Card>
       </div>
