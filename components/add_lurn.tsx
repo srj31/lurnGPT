@@ -13,58 +13,15 @@ import {
 } from "@/components/ui/sheet";
 import { PlusCircledIcon } from "@radix-ui/react-icons";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
-import {
-  addDoc,
-  arrayUnion,
-  collection,
-  doc,
-  getDocs,
-  query,
-  updateDoc,
-  where,
-} from "firebase/firestore";
-import { database } from "@/app/config";
 import { useState } from "react";
-import { UserAuth } from "@/app/context/AuthContext";
+import { Skill } from "@/data/lurn";
 
-export function AddSheet() {
-  const userSkillsRef = collection(database, "user_skills");
-  const { user } = UserAuth();
-
-  const [selectedLevel, setSelectedLevel] = useState("beginner");
+export function AddSheet({ handleAdd }: { handleAdd: (skill: Skill) => void }) {
+  const [selectedLevel, setSelectedLevel] = useState("Beginner");
   const [skillName, setName] = useState("");
   const [skillDescription, setDescription] = useState("");
   const [skillImage, setImage] = useState("");
 
-  const handleAdd = async () => {
-    const q = query(userSkillsRef, where("user_id", "==", user.uid));
-
-    const skillSnap = await getDocs(q);
-
-    if (skillSnap.empty) {
-      addDoc(userSkillsRef, {
-        user_id: user.uid,
-        skills: [
-          {
-            description: skillDescription,
-            image: skillImage,
-            name: skillName,
-            level: selectedLevel,
-          },
-        ],
-      });
-    } else {
-      const skillRef = doc(database, "user_skills", skillSnap.docs[0].id);
-      await updateDoc(skillRef, {
-        skills: arrayUnion({
-          description: skillDescription,
-          image: skillImage,
-          name: skillName,
-          level: selectedLevel,
-        }),
-      });
-    }
-  };
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -118,19 +75,19 @@ export function AddSheet() {
             <RadioGroup
               value={selectedLevel}
               onValueChange={(e) => setSelectedLevel(e)}
-              defaultValue="beginner"
+              defaultValue="Beginner"
               className="col-start-2 col-span-3 space-y-2"
             >
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="beginner" id="r1" />
+                <RadioGroupItem value="Beginner" id="r1" />
                 <Label htmlFor="r1">Beginner</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="intermediate" id="r2" />
+                <RadioGroupItem value="Intermediate" id="r2" />
                 <Label htmlFor="r2">Intermediate</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="advanced" id="r3" />
+                <RadioGroupItem value="Advanced" id="r3" />
                 <Label htmlFor="r3">Advanced</Label>
               </div>
             </RadioGroup>
@@ -138,7 +95,17 @@ export function AddSheet() {
         </div>
         <SheetFooter>
           <SheetClose asChild>
-            <Button type="submit" onClick={handleAdd}>
+            <Button
+              type="submit"
+              onClick={() => {
+                handleAdd({
+                  description: skillDescription,
+                  image: skillImage,
+                  name: skillName,
+                  level: selectedLevel,
+                });
+              }}
+            >
               Save changes
             </Button>
           </SheetClose>

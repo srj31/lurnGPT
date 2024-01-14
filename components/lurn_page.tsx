@@ -3,12 +3,15 @@ import { Button } from "./ui/button";
 import { UserAuth } from "@/app/context/AuthContext";
 import { database } from "@/app/config";
 import { arrayUnion, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { useState } from "react";
 
 interface SkillArtworkProps extends React.HTMLAttributes<HTMLDivElement> {
   page: any;
   aspectRatio?: "portrait" | "square" | "landscape";
   width?: number;
   height?: number;
+  completed?: boolean;
+  handleDone?: (v: any) => void;
   readonly?: boolean;
 }
 export const SkillPageCard = ({
@@ -17,6 +20,8 @@ export const SkillPageCard = ({
   width,
   height,
   className,
+  completed,
+  handleDone,
   readonly,
   ...props
 }: SkillArtworkProps) => {
@@ -24,6 +29,8 @@ export const SkillPageCard = ({
     window.open(page.link, "_blank");
   };
   const { user } = UserAuth();
+
+  const [isCompleted, setIsCompleted] = useState(completed);
 
   const handleDoneTask = async () => {
     const taskDoneRef = doc(database, "user_tasks_done", user.uid);
@@ -61,13 +68,15 @@ export const SkillPageCard = ({
         [page.skill.name]: [page.plan],
       });
     }
+    setIsCompleted(true);
+    await handleDone(page!);
     await handleDoneTask();
   };
 
   return (
-    <div className={cn("space-y-3", className)} {...props}>
+    <div className={cn("relative", className)} {...props}>
       <div
-        className="overflow-hidden min-h-[30vh] flex flex-col justify-center dark:bg-white bg-gray-100 rounded-md flex flex-col items-center"
+        className="overflow-hidden h-full  flex flex-col justify-center dark:bg-white bg-gray-100 rounded-md flex flex-col items-center"
         onClick={() => cardClick()}
       >
         <img
@@ -89,19 +98,29 @@ export const SkillPageCard = ({
           )}
         />
       </div>
-      <div className="space-y-1 text-sm">
+      <div className="space-y-1 text-sm p-[0.5rem]">
         <h2 className="font-medium leading-none">{page.plan}</h2>
         <h3 className="font-medium leading-none">{page.title}</h3>
         <p className="text-xs text-muted-foreground">{page.snippet}</p>
       </div>
       {!readonly && (
-        <div className="flex space-x-2">
-          <Button variant="outline" onClick={handleDoneTask}>
-            Done Task
-          </Button>
-          <Button variant="outline" onClick={handleDonePlan}>
-            Done Plan
-          </Button>
+        <div
+          className="absolute w-full grid grid-cols-5 top-[94%]"
+          onClick={handleDonePlan}
+        >
+          <div className="col-start-2 col-span-3">
+            {isCompleted == true ? (
+              <button className="w-full opacity-100  tracking-wide text-gray-800 font-bold rounded border-b-2 border-green-600 bg-green-500 text-white shadow-md py-2 px-6">
+                <span className="mx-auto">Done</span>
+              </button>
+            ) : (
+              <button className="w-full opacity-50 hover:opacity-100 hover:cursor-pointer bg-white tracking-wide text-gray-800 font-bold rounded border-b-2 border-green-500 hover:border-green-600 hover:bg-green-500 hover:text-white shadow-md py-2 px-6">
+                <span className="mx-auto">
+                  Done {page.points && `(🏅 ${page.points})`}
+                </span>
+              </button>
+            )}
+          </div>
         </div>
       )}
     </div>

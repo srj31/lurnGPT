@@ -70,6 +70,7 @@ export const Progress = () => {
                   aspectRatio="square"
                   width={150}
                   height={150}
+                  readonly={true}
                   onClick={() =>
                     setSelectedSkill({
                       name: skill.name,
@@ -84,17 +85,19 @@ export const Progress = () => {
         </div>
       </div>
       <div className="flex justify-center">
-        <ScrollArea className="h-[50vh] w-[80vw] rounded-md border">
-          <div className="grid grid-cols-4 gap-4 pb-4">
+        <ScrollArea className="h-[50vh] w-[90vw] rounded-md border">
+          <div className="grid grid-cols-3 gap-4 pb-4">
             {selectedSkillHistory &&
               selectedSkillHistory.map((page) => (
-                <SkillPageCard
-                  key={page.title}
-                  page={page}
-                  className={`col-span-1`}
-                  aspectRatio="landscape"
-                  readonly={true}
-                />
+                <div key={page.title} className="bg-gradient-to-r from-green-800 to-green-500 p-[0.25rem] rounded-lg shadow-lg shadow-green-500">
+                  <SkillPageCard
+                    key={page.title}
+                    page={page}
+                    className={`rounded-md col-span-1 bg-background h-[30vh]`}
+                    aspectRatio="landscape"
+                    readonly={true}
+                  />
+                </div>
               ))}
           </div>
         </ScrollArea>

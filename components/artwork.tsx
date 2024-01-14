@@ -16,6 +16,7 @@ interface SkillArtworkProps extends React.HTMLAttributes<HTMLDivElement> {
   aspectRatio?: "portrait" | "square";
   width?: number;
   height?: number;
+  readonly: boolean;
 }
 
 import {
@@ -29,7 +30,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
+import { CrossCircledIcon } from "@radix-ui/react-icons";
 import { UserAuth } from "@/app/context/AuthContext";
 import { database } from "@/app/config";
 import {
@@ -46,14 +47,18 @@ const CancelButton = ({ handleClick }: any) => {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="destructive">Delete</Button>
+        <CrossCircledIcon
+          className="hover:cursor-pointer drop-shadow-md shadow-red-500 text-red-600"
+          width={25}
+          height={25}
+        />
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
+            This action cannot be undone. This will permanently delete the skill
+            and might lead to loss of progress
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -71,6 +76,7 @@ export function SkillArtwork({
   width,
   height,
   className,
+  readonly = false,
   ...props
 }: SkillArtworkProps) {
   const { user } = UserAuth();
@@ -86,16 +92,14 @@ export function SkillArtwork({
     }
   };
   return (
-    <div className="space-y-3">
+    <div className="relative">
       <div className={cn("space-y-3", className)} {...props}>
         <ContextMenu>
           <ContextMenuTrigger>
             <div className="overflow-hidden dark:bg-white bg-gray-100 rounded-md">
-              <Image
+              <img
                 src={skill.image}
                 alt={skill.name}
-                width={width}
-                height={height}
                 className={cn(
                   "h-auto w-auto object-cover transition-all hover:scale-105",
                   aspectRatio === "portrait" ? "aspect-[3/4]" : "aspect-square",
@@ -120,7 +124,11 @@ export function SkillArtwork({
           <p className="text-xs text-muted-foreground">{skill.description}</p>
         </div>
       </div>
-      <CancelButton handleClick={handleDelete} />
+      {!readonly && (
+        <div className="absolute top-0 p-1 text-red">
+          <CancelButton handleClick={handleDelete} />
+        </div>
+      )}
     </div>
   );
 }
