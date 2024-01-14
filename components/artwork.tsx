@@ -17,6 +17,7 @@ interface SkillArtworkProps extends React.HTMLAttributes<HTMLDivElement> {
   width?: number;
   height?: number;
   readonly: boolean;
+  handleDelete?: (v: any) => void;
 }
 
 import {
@@ -33,22 +34,15 @@ import {
 import { CrossCircledIcon } from "@radix-ui/react-icons";
 import { UserAuth } from "@/app/context/AuthContext";
 import { database } from "@/app/config";
-import {
-  arrayRemove,
-  collection,
-  doc,
-  getDocs,
-  query,
-  updateDoc,
-  where,
-} from "firebase/firestore";
+import { collection } from "firebase/firestore";
+import { toast } from "sonner";
 
-const CancelButton = ({ handleClick }: any) => {
+const CancelButton = ({ skill, handleClick }: any) => {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <CrossCircledIcon
-          className="hover:cursor-pointer drop-shadow-md shadow-red-500 text-red-600"
+          className="hover:cursor-pointer drop-shadow-[0_0_2px_black] text-red-600"
           width={25}
           height={25}
         />
@@ -63,7 +57,14 @@ const CancelButton = ({ handleClick }: any) => {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={handleClick}>Continue</AlertDialogAction>
+          <AlertDialogAction
+            onClick={() => {
+              handleClick(skill);
+              toast.error("Skill deleted");
+            }}
+          >
+            Continue
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
@@ -76,21 +77,12 @@ export function SkillArtwork({
   width,
   height,
   className,
+  handleDelete,
   readonly = false,
   ...props
 }: SkillArtworkProps) {
   const { user } = UserAuth();
   const userSkillsRef = collection(database, "user_skills");
-  const handleDelete = async () => {
-    const q = query(userSkillsRef, where("user_id", "==", user.uid));
-    const skillSnap = await getDocs(q);
-    if (!skillSnap.empty) {
-      const skillRef = doc(database, "user_skills", skillSnap.docs[0].id);
-      await updateDoc(skillRef, {
-        skills: arrayRemove(skill),
-      });
-    }
-  };
   return (
     <div className="relative">
       <div className={cn("space-y-3", className)} {...props}>
@@ -124,9 +116,9 @@ export function SkillArtwork({
           <p className="text-xs text-muted-foreground">{skill.description}</p>
         </div>
       </div>
-      {!readonly && (
+      {!readonly && handleDelete && (
         <div className="absolute top-0 p-1 text-red">
-          <CancelButton handleClick={handleDelete} />
+          <CancelButton handleClick={handleDelete} skill={skill} />
         </div>
       )}
     </div>

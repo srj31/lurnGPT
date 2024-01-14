@@ -59,6 +59,13 @@ export function AuthTabs() {
             </svg>
             LurnGPT
           </div>
+          <div className="z-20">
+            <img
+              className="rounded-lg p-10"
+              style={{ filter: "invert(1)" }}
+              src="/images/home.svg"
+            />
+          </div>
           <div className="relative z-20 mt-auto">
             <blockquote className="space-y-2">
               <p className="text-lg">

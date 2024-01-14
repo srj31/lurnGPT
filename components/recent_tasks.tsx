@@ -16,7 +16,7 @@ export const RecentTasks = ({ tasks }: { tasks: any[] }) => {
                 {" "}
                 {new Date(task.date).toDateString()}
               </p>
-              <p className="text-sm text-muted-foreground">{task.snippet}</p>
+              <p className="text-xs text-muted-foreground">{task.snippet}</p>
             </div>
             <div className="ml-auto font-medium">{task.skill}</div>
           </div>
