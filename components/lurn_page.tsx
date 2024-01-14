@@ -69,7 +69,7 @@ export const SkillPageCard = ({
       });
     }
     setIsCompleted(true);
-    await handleDone(page);
+    await handleDone(page!);
     await handleDoneTask();
   };
 
@@ -110,7 +110,7 @@ export const SkillPageCard = ({
         >
           <div className="col-start-2 col-span-3">
             {isCompleted == true ? (
-              <button className="w-full opacity-100 bg-white tracking-wide text-gray-800 font-bold rounded border-b-2 border-green-600 bg-green-500 text-white shadow-md py-2 px-6">
+              <button className="w-full opacity-100  tracking-wide text-gray-800 font-bold rounded border-b-2 border-green-600 bg-green-500 text-white shadow-md py-2 px-6">
                 <span className="mx-auto">Done</span>
               </button>
             ) : (
